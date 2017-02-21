@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>gulp.js - 基于流的自动化构建工具。 | gulp.js 中文网</title>
+
+    <meta name="description" content="Gulp.js 是一个自动化构建工具，开发者可以使用它在项目开发过程中自动执行常见任务。Gulp.js 是基于 Node.js 构建的，利用 Node.js 流的威力，你可以快速构建项目并减少频繁的 IO 操作。Gulp.js 源文件和你用来定义任务的 Gulp 文件都是通过 JavaScript（或者 CoffeeScript ）源码来实现的。">
+    <meta name="keywords" content="Gulp.js,Gulp,Node.js,Node,JavaScript,CoffeeScript,Grunt,Gruntjs,Stream，流,自动化,Make">
+    <meta name="author" content="gulp.js 中文网">
+    <link rel="icon" href="../../favicon.ico">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/highlight.js/8.4/styles/monokai_sublime.min.css">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="../../css/style.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top site-navbar">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../">Gulp 中文网</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../">首页</a>
+                    </li>
+                    <li><a href="../">中文文档</a>
+                    </li>
+                    <li><a href="../getting-started/">入门指南</a>
+                    </li>
+                    <li><a href="./">API</a>
+                    </li>
+                    <li><a href="../writing-a-plugin/">插件开发</a>
+                    </li>
+                    <li><a href="../faq/">常见问题</a>
+                    </li>
+                    <li><a href="../recipes/">使用技巧</a>
+                    </li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </nav>
+
+
+
+    <main class="docs-wrapper container">
+        <div class="row">
+            <article class="col-md-8 col-md-push-2 markdown-body" id="docs-content">
+                <h2>gulp API 文档</h2>
+                <h3>gulp.src(globs[, options])</h3>
+                <p>输出（Emits）符合所提供的匹配模式（glob）或者匹配模式的数组（array of globs）的文件。 将返回一个 <a href="https://github.com/wearefractal/vinyl-fs" target="_blank">Vinyl files</a> 的 <a href="http://nodejs.org/api/stream.html" target="_blank">stream</a> 它可以被 <a href="http://nodejs.org/api/stream.html#stream_readable_pipe_destination_options" target="_blank">piped</a>                    到别的插件中。</p>
+                <pre><code class="language-javascript">gulp.src('client/templates/*.jade')
+  .pipe(jade())
+  .pipe(minify())
+  .pipe(gulp.dest('build/minified_templates'));
+</code></pre>
+                <p><code>glob</code> 请参考 <a href="https://github.com/isaacs/node-glob" target="_blank">node-glob 语法</a> 或者，你也可以直接写文件的路径。</p>
+                <h4>globs</h4>
+                <p>类型： <code>String</code> 或 <code>Array</code>
+                </p>
+                <p>所要读取的 glob 或者包含 globs 的数组。</p>
+                <h4>options</h4>
+                <p>类型： <code>Object</code>
+                </p>
+                <p>通过 <a href="https://github.com/wearefractal/glob-stream" target="_blank">glob-stream</a> 所传递给 <a href="https://github.com/isaacs/node-glob" target="_blank">node-glob</a> 的参数。</p>
+                <p>除了 <a href="https://github.com/isaacs/node-glob#options" target="_blank">node-glob</a> 和 <a href="https://github.com/wearefractal/glob-stream" target="_blank">glob-stream</a> 所支持的参数外，gulp 增加了一些额外的选项参数：</p>
+                <h4>options.buffer</h4>
+                <p>类型： <code>Boolean</code> 默认值： <code>true</code>
+                </p>
+                <p>如果该项被设置为 <code>false</code>，那么将会以 stream 方式返回 <code>file.contents</code> 而不是文件 buffer 的形式。这在处理一些大文件的时候将会很有用。**注意：**插件可能并不会实现对 stream 的支持。</p>
+                <h4>options.read</h4>
+                <p>类型： <code>Boolean</code> 默认值： <code>true</code>
+                </p>
+                <p>如果该项被设置为 <code>false</code>， 那么 <code>file.contents</code> 会返回空值（null），也就是并不会去读取文件。</p>
+                <h4>options.base</h4>
+                <p>类型： <code>String</code> 默认值： 将会加在 glob 之前 (请看 <a href="https://github.com/wearefractal/glob2base" target="_blank">glob2base</a>)</p>
+                <p>如, 请想像一下在一个路径为 <code>client/js/somedir</code> 的目录中，有一个文件叫 <code>somefile.js</code> ：</p>
+                <pre><code class="language-js">gulp.src('client/js/**/*.js') // 匹配 'client/js/somedir/somefile.js' 并且将 `base` 解析为 `client/js/`
+  .pipe(minify())
+  .pipe(gulp.dest('build'));  // 写入 'build/somedir/somefile.js'
+
+gulp.src('client/js/**/*.js', { base: 'client' })
+  .pipe(minify())
+  .pipe(gulp.dest('build'));  // 写入 'build/js/somedir/somefile.js'
+</code></pre>
+                <h3>gulp.dest(path[, options])</h3>
+                <p>能被 pipe 进来，并且将会写文件。并且重新输出（emits）所有数据，因此你可以将它 pipe 到多个文件夹。如果某文件夹不存在，将会自动创建它。</p>
+                <pre><code class="language-javascript">gulp.src('./client/templates/*.jade')
+  .pipe(jade())
+  .pipe(gulp.dest('./build/templates'))
+  .pipe(minify())
+  .pipe(gulp.dest('./build/minified_templates'));
+</code></pre>
+                <p>文件被写入的路径是以所给的相对路径根据所给的目标目录计算而来。类似的，相对路径也可以根据所给的 base 来计算。 请查看上述的 <code>gulp.src</code> 来了解更多信息。</p>
+                <h4>path</h4>
+                <p>类型： <code>String</code> or <code>Function</code>
+                </p>
+                <p>文件将被写入的路径（输出目录）。也可以传入一个函数，在函数中返回相应路径，这个函数也可以由 <a href="https://github.com/wearefractal/vinyl" target="_blank">vinyl 文件实例</a> 来提供。</p>
+                <h4>options</h4>
+                <p>类型： <code>Object</code>
+                </p>
+                <h4>options.cwd</h4>
+                <p>类型： <code>String</code> 默认值： <code>process.cwd()</code>
+                </p>
+                <p>输出目录的 <code>cwd</code> 参数，只在所给的输出目录是相对路径时候有效。</p>
+                <h4>options.mode</h4>
+                <p>类型： <code>String</code> 默认值： <code>0777</code>
+                </p>
+                <p>八进制权限字符，用以定义所有在输出目录中所创建的目录的权限。</p>
+                <h3>gulp.task(name[, deps], fn)</h3>
+                <p>定义一个使用 <a href="https://github.com/robrich/orchestrator" target="_blank">Orchestrator</a> 实现的任务（task）。</p>
+                <pre><code class="language-js">gulp.task('somename', function() {
+  // 做一些事
+});
+</code></pre>
+                <h4>name</h4>
+                <p>任务的名字，如果你需要在命令行中运行你的某些任务，那么，请不要在名字中使用空格。</p>
+                <h4>deps</h4>
+                <p>类型： <code>Array</code>
+                </p>
+                <p>一个包含任务列表的数组，这些任务会在你当前任务运行之前完成。</p>
+                <pre><code class="language-js">gulp.task('mytask', ['array', 'of', 'task', 'names'], function() {
+  // 做一些事
+});
+</code></pre>
+                <p><strong>注意：</strong> 你的任务是否在这些前置依赖的任务完成之前运行了？请一定要确保你所依赖的任务列表中的任务都使用了正确的异步执行方式：使用一个 callback，或者返回一个 promise 或 stream。</p>
+                <h4>fn</h4>
+                <p>该函数定义任务所要执行的一些操作。通常来说，它会是这种形式：<code>gulp.src().pipe(someplugin())</code>。</p>
+                <h4>异步任务支持</h4>
+                <p>任务可以异步执行，如果 <code>fn</code> 能做到以下其中一点：</p>
+                <h5>接受一个 callback</h5>
+                <pre><code class="language-javascript">// 在 shell 中执行一个命令
+var exec = require('child_process').exec;
+gulp.task('jekyll', function(cb) {
+  // 编译 Jekyll
+  exec('jekyll build', function(err) {
+    if (err) return cb(err); // 返回 error
+    cb(); // 完成 task
+  });
+});
+</code></pre>
+                <h5>返回一个 stream</h5>
+                <pre><code class="language-js">gulp.task('somename', function() {
+  var stream = gulp.src('client/**/*.js')
+    .pipe(minify())
+    .pipe(gulp.dest('build'));
+  return stream;
+});
+</code></pre>
+                <h5>返回一个 promise</h5>
+                <pre><code class="language-javascript">var Q = require('q');
+
+gulp.task('somename', function() {
+  var deferred = Q.defer();
+
+  // 执行异步的操作
+  setTimeout(function() {
+    deferred.resolve();
+  }, 1);
+
+  return deferred.promise;
+});
+</code></pre>
+                <p><strong>注意：</strong> 默认的，task 将以最大的并发数执行，也就是说，gulp 会一次性运行所有的 task 并且不做任何等待。如果你想要创建一个序列化的 task 队列，并以特定的顺序执行，你需要做两件事：</p>
+                <ul>
+                    <li>给出一个提示，来告知 task 什么时候执行完毕，</li>
+                    <li>并且再给出一个提示，来告知一个 task 依赖另一个 task 的完成。</li>
+                </ul>
+                <p>对于这个例子，让我们先假定你有两个 task，&quot;one&quot; 和 &quot;two&quot;，并且你希望它们按照这个顺序执行：</p>
+                <ol>
+                    <li>
+                        <p>在 &quot;one&quot; 中，你加入一个提示，来告知什么时候它会完成：可以再完成时候返回一个 callback，或者返回一个 promise 或 stream，这样系统会去等待它完成。</p>
+                    </li>
+                    <li>
+                        <p>在 &quot;two&quot; 中，你需要添加一个提示来告诉系统它需要依赖第一个 task 完成。</p>
+                    </li>
+                </ol>
+                <p>因此，这个例子的实际代码将会是这样：</p>
+                <pre><code class="language-js">var gulp = require('gulp');
+
+// 返回一个 callback，因此系统可以知道它什么时候完成
+gulp.task('one', function(cb) {
+    // 做一些事 -- 异步的或者其他的
+    cb(err); // 如果 err 不是 null 或 undefined，则会停止执行，且注意，这样代表执行失败了
+});
+
+// 定义一个所依赖的 task 必须在这个 task 执行之前完成
+gulp.task('two', ['one'], function() {
+    // 'one' 完成后
+});
+
+gulp.task('default', ['one', 'two']);
+</code></pre>
+                <h3>gulp.watch(glob [, opts], tasks) 或 gulp.watch(glob [, opts, cb])</h3>
+                <p>监视文件，并且可以在文件发生改动时候做一些事情。它总会返回一个 EventEmitter 来发射（emit） <code>change</code> 事件。</p>
+                <h3>gulp.watch(glob[, opts], tasks)</h3>
+                <h4>glob</h4>
+                <p>类型： <code>String</code> or <code>Array</code>
+                </p>
+                <p>一个 glob 字符串，或者一个包含多个 glob 字符串的数组，用来指定具体监控哪些文件的变动。</p>
+                <h4>opts</h4>
+                <p>类型： <code>Object</code>
+                </p>
+                <p>传给 <a href="https://github.com/shama/gaze" target="_blank"><code>gaze</code></a> 的参数。</p>
+                <h4>tasks</h4>
+                <p>类型： <code>Array</code>
+                </p>
+                <p>需要在文件变动后执行的一个或者多个通过 <code>gulp.task()</code> 创建的 task 的名字，</p>
+                <pre><code class="language-js">var watcher = gulp.watch('js/**/*.js', ['uglify','reload']);
+watcher.on('change', function(event) {
+  console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+});
+</code></pre>
+                <h3>gulp.watch(glob[, opts, cb])</h3>
+                <h4>glob</h4>
+                <p>类型： <code>String</code> or <code>Array</code>
+                </p>
+                <p>一个 glob 字符串，或者一个包含多个 glob 字符串的数组，用来指定具体监控哪些文件的变动。</p>
+                <h4>opts</h4>
+                <p>类型： <code>Object</code>
+                </p>
+                <p>传给 <a href="https://github.com/shama/gaze" target="_blank"><code>gaze</code></a> 的参数。</p>
+                <h4>cb(event)</h4>
+                <p>类型： <code>Function</code>
+                </p>
+                <p>每次变动需要执行的 callback。</p>
+                <pre><code class="language-js">gulp.watch('js/**/*.js', function(event) {
+  console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+});
+</code></pre>
+                <p>callback 会被传入一个名为 <code>event</code> 的对象。这个对象描述了所监控到的变动：</p>
+                <h5>event.type</h5>
+                <p>类型： <code>String</code>
+                </p>
+                <p>发生的变动的类型：<code>added</code>, <code>changed</code> 或者 <code>deleted</code>。</p>
+                <h5>event.path</h5>
+                <p>类型： <code>String</code>
+                </p>
+                <p>触发了该事件的文件的路径。</p>
+
+            </article>
+        </div>
+
+    </main>
+
+    <!-- Site footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; Gulp 中文网 2015</p>
+            <p><a href="http://www.miibeian.gov.cn/" target="_blank">京ICP备11008151号</a> | 京公网安备11010802014853</p>
+        </div>
+    </footer>
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../js/ie10-viewport-bug-workaround.js"></script>
+    <script src="http://cdn.bootcss.com/highlight.js/8.4/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="../../js/site.js"></script>
+    <script type="text/javascript">
+        var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+        document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3d8e7fc0de8a2a75f2ca3bfe128e6391' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+</body>
+
+</html>
