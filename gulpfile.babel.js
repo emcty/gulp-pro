@@ -1,4 +1,5 @@
-let gulp=require("gulp");
+// let gulp=require("gulp");
+import gulp from 'gulp';
 let uglify = require('gulp-uglify');  //加载js压缩
 let babel=require("gulp-babel");
 let jshint=require("gulp-jshint");
@@ -8,16 +9,11 @@ let runSequence=require("run-sequence");
 let del=require("del");
 let babelify=require("babelify");
 let browserify=require("browserify");
-let packager = browserify({
-      cache: {},
-      packageCache: {},
-      entries:'./assets/js/**/*.js',
-      debug:true,
-      paths: ['node_modules','./*.js']
-    }).transform(babelify);
+
 gulp.task("clean",function(){ 
-    del(['dist'])
+    return del(['dist'])
 });
+
 gulp.task('jsCompress', function () {
     gulp.src(['./assets/js/**/*.js','!./assets/js/abc/exclude.js'])  //获取文件，同时过滤掉.min.js文件
          .pipe(babel())
@@ -41,22 +37,29 @@ gulp.task('cssMinfy', function(){
 
 gulp.task('imageMin', function () {
     return gulp.src('./assets/images/*')
-        .pipe(imagemin(
-			{
-	            progressive: true,
-	            optimizationLevel:3
-        	}
-        ))
-        .pipe(gulp.dest('dist/images'));
+    .pipe(imagemin(
+		{
+            progressive: true,
+            optimizationLevel:3
+    	}
+    ))
+    .pipe(gulp.dest('dist/images'));
 });
-gulp.task('build',function(done){ 
+
+gulp.task('browserify',function(){
+	return browserify({entries:'dist/js/**/*.js',debug:true})
+	.transform(babelify)
+	.bundle()
+	.pipe(gulp.dest('dist/js/'));
+});
+
+gulp.task('build',function(done){
     runSequence(
         'clean',
         ['jsCompress', 'cssMinfy', 'imageMin'],
         done
     )
 })
-
 
 gulp.task('default', ['build']);
 
