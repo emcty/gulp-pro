@@ -1,4 +1,4 @@
-let  gulp=require("gulp");
+let gulp=require("gulp");
 let uglify = require('gulp-uglify');  //加载js压缩
 let babel=require("gulp-babel");
 let jshint=require("gulp-jshint");
@@ -6,6 +6,15 @@ let cssMin = require('gulp-css');
 let imagemin = require('gulp-imagemin');
 let runSequence=require("run-sequence");
 let del=require("del");
+let babelify=require("babelify");
+let browserify=require("browserify");
+let packager = browserify({
+      cache: {},
+      packageCache: {},
+      entries:'./assets/js/**/*.js',
+      debug:true,
+      paths: ['node_modules','./*.js']
+    }).transform(babelify);
 gulp.task("clean",function(){ 
     del(['dist'])
 });
@@ -16,13 +25,13 @@ gulp.task('jsCompress', function () {
          .pipe(gulp.dest('dist/js/')); //输出文件
 });
 
-gulp.task("jsHint",function(){ 
-    gulp.src('./assets/js/**/*.js')
-     .pipe(jshint({
-            esversion: 6
-        }))
-    .pipe(jshint.reporter('default'))
- });
+// gulp.task("jsHint",function(){ 
+//     gulp.src('./assets/js/**/*.js')
+//      .pipe(jshint({
+//             esversion: 6
+//         }))
+//     .pipe(jshint.reporter('default'))
+//  });
 
 gulp.task('cssMinfy', function(){
   return gulp.src('./assets/css/**/*.css')
